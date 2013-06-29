@@ -88,7 +88,7 @@ then recursively call toJSON on models within.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      toJSON: <span class="keyword">function</span>() {
+            <div class="content"><div class='highlight'><pre>      toJSON: <span class="keyword">function</span>(collection) {
         <span class="keyword">var</span> attr = <span class="keyword">this</span>.attributes,
             resp = _.clone(attr);</pre></div></div>
             
@@ -106,8 +106,8 @@ collection and we know the name of it. </p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(<span class="keyword">this</span>.nest) {
-          resp[<span class="keyword">this</span>.nest] = resp[<span class="keyword">this</span>.nest].toJSON();
+            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(collection) {
+          resp[collection] = resp[collection].toJSON();
           <span class="keyword">return</span> resp;
         }</pre></div></div>
             
