@@ -8,13 +8,13 @@
       //------
       //Here we check if an attribute is a Collection,
       //then recursively call toJSON on models within.
-      toJSON: function() {
+      toJSON: function(collection) {
         var attr = this.attributes,
             resp = _.clone(attr);
         //Optimize if we know there is only one nested 
         //collection and we know the name of it. 
-        if(this.nest) {
-          resp[this.nest] = resp[this.nest].toJSON();
+        if(collection) {
+          resp[collection] = resp[collection].toJSON();
           return resp;
         }
         //If not loop through all.
