@@ -17,6 +17,13 @@
           resp[this.nest] = resp[this.nest].toJSON();
           return resp;
         }
+        //Optimize if there are multiple and we know the names.
+        if(this.nests) {
+          var i, j, nests = this.nests.split(" ");
+          for(i = 0, j = nests.length; i < j; i++) {
+            resp[nests[i]] = resp[nests[i]].toJSON();
+          }
+        }
         //If not loop through all.
         for(prop in attr) {
           if(attr[prop] instanceof Backbone.Collection) { 
@@ -32,7 +39,7 @@
       //standard models. 
       listenToCollection: function() {
         var attr = this.attributes;
-        //Optimize if nested collection is explictly named.
+        //Optimize if nested collection is explictly known.
         if(this.nest) {
             return this.listenTo(attr[this.nest], "change", function() {
               this.trigger("change change:"+this.nest);
