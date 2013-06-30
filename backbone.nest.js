@@ -8,13 +8,13 @@
       //------
       //Here we check if an attribute is a Collection,
       //then recursively call toJSON on models within.
-      toJSON: function(collection) {
+      toJSON: function() {
         var attr = this.attributes,
             resp = _.clone(attr);
         //Optimize if we know there is only one nested 
         //collection and we know the name of it. 
-        if(collection) {
-          resp[collection] = resp[collection].toJSON();
+        if(this.nest) {
+          resp[this.nest] = resp[this.nest].toJSON();
           return resp;
         }
         //If not loop through all.
@@ -30,12 +30,12 @@
       //This bubbles change events from nested collections
       //up to the container model, not auto to optimize for
       //standard models. 
-      listenToCollection: function(prop) {
+      listenToCollection: function() {
         var attr = this.attributes;
         //Optimize if nested collection is explictly named.
-        if(prop) {
-            return this.listenTo(attr[prop], "change", function() {
-              this.trigger("change change:"+prop);
+        if(this.nest) {
+            return this.listenTo(attr[this.nest], "change", function() {
+              this.trigger("change change:"+this.nest);
             }, this);
         };
         //If not loop through all.
