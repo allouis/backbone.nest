@@ -92,9 +92,17 @@
   //Go through each one, have it invoke upon the nest
   _.each(methods, function(method) {
     Backbone.Model.prototype[method] = function() {
-      var args = Array.prototype.slice.call(arguments);
-      return Backbone.Collection.prototype[method].apply(this.attributes[this.nest], args);
-    }
+      var args = Array.prototype.slice.call(arguments),
+          nests = this.nests.split(" "), i, j;
+      if(nest.length === 1) {
+        return Backbone.Collection.prototype[method].apply(this.attributes[this.nests], args);
+      }
+      return function(){
+        for(i = 0, j = nests.length; i < j; i++){
+          Backbone.Collection.prototype[method].apply(this.attributes[nests[i]], args);
+        };
+      };
+    };
   });
 
 }(Backbone))
