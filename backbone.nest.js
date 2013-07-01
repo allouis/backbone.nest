@@ -24,6 +24,7 @@
           for(i = 0, j = nests.length; i < j; i++) {
             resp[nests[i]] = resp[nests[i]].toJSON();
           }
+          return resp;
         }
         //If not loop through all.
         for(prop in attr) {
@@ -41,11 +42,12 @@
         var i, j, nests = this.nests.split(" ");
         if(nests.length === 1) {
           data[this.nests] = new this.nest(data[this.nests]);    
-          return data;
+        } else
+        if(this.nests) {
+          for(i = 0, j = nests.length; i < j; i++) {
+            data[nests[i]] = new this.nest(data[nests[i]]);
+          } 
         }
-        for(i = 0, j = nests.length; i < j; i++) {
-          data[nests[i]] = new this.nest(data[nests[i]]);
-        } 
         return data;
       },
       //listenToCollection
@@ -58,10 +60,19 @@
         var attr = this.attributes;
         //Optimize if nested collection is explictly known.
         if(nests.length === 1) {
-            return this.listenTo(attr[this.nest], "change", function() {
-              this.trigger("change change:"+this.nest);
+            return this.listenTo(attr[this.nests], "change", function() {
+              this.trigger("change change:"+this.nests);
             }, this);
-        };
+        } else
+        //Optimize for multiple and known.
+        if(this.nests) {
+          for(i = 0, j = nests.length; i < j; i++) {
+            this.listenTo(attr[nests[i]], "change", function() {
+              this.trigger("change change:"+nests[i]);
+            }, this);
+          } 
+          return;
+        }
         //If not loop through all.
         for(prop in attr) {
           if(attr[prop] instanceof Backbone.Collection) { 
