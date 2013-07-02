@@ -1,5 +1,5 @@
 
-var TestCollection = new Backbone.Collection([
+var testcollection = new Backbone.Collection([
       {
         name:"test1",
         type:"model"
@@ -9,11 +9,13 @@ var TestCollection = new Backbone.Collection([
         type:"model"
       }
     ]),
-    TestModel = new Backbone.Model({
-      name:"master 1",
-      type:"master model",
-      test:TestCollection
-    });
+    TestModel = Backbone.Model.extend({
+      nest: "Coll"
+    }),
+    testmodel = new TestModel({
+      Coll: testcollection,
+      name:"base"
+    })
 
 TestModel.on("change", function (change) {
   console.log("TestModel::change:");
@@ -22,5 +24,7 @@ TestCollection.on("change", function (change) {
   console.log("TestCollection::change")
 });
 
-var mod = TestModel,
-    col = TestCollection;
+var mod = testmodel,
+    col = testcollection;
+
+
