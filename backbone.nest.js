@@ -1,4 +1,3 @@
-
 (function(Backbone){
     //Model
     //-----
@@ -34,11 +33,12 @@
         };
         return resp;
       },
+
       //parse
       //-----
       //This creates a collection if model is passed an array
       //under the nest attributes name
-      parse: function(data) {
+      parse: function(data, options) {
         var i, j, nests = this.nests.split(" ");
         if(nests.length === 1) {
           data[this.nests] = new this.nest(data[this.nests]);    
@@ -50,6 +50,7 @@
         }
         return data;
       },
+
       //listenToCollection
       //------------------
       //This bubbles change events from nested collections
@@ -85,11 +86,11 @@
         };
       }
     });
+
   //Proxy collection methods on nest via the model.
   //-----------------------------------------------
-
   //List all methods we want to proxy
-  var methods = ['push', 'pop', 'unshift', 'shift'];
+  var methods = ['push', 'pop', 'unshift', 'shift', 'at', 'where', 'findWhere'];
 
   //Go through each one, have it invoke upon the nest
   _.each(methods, function(method) {
