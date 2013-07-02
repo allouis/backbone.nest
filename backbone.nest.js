@@ -41,11 +41,11 @@
       parse: function(data) {
         var i, j, nests = this.nests.split(" ");
         if(nests.length === 1) {
-          if(data[this.nests]) data[this.nests] = new this.nest(data[this.nests]);    
+          data[this.nests] = new this.nest(data[this.nests]);    
         } else
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
-            if(data[nests[i]]) data[nests[i]] = new this.nest(data[nests[i]]);
+            data[nests[i]] = new this.nest(data[nests[i]]);
           } 
         }
         return data;
