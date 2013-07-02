@@ -30,8 +30,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre>
-(<span class="keyword">function</span>(Backbone){</pre></div></div>
+            <div class="content"><div class='highlight'><pre>(<span class="keyword">function</span>(Backbone){</pre></div></div>
             
         </li>
         
@@ -109,7 +108,7 @@ collection and we know the name of it. </p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(nests.length === <span class="number">1</span>) {
-          resp[<span class="keyword">this</span>.nests] = resp[<span class="keyword">this</span>.nests].toJSON();
+          <span class="keyword">if</span>(resp[<span class="keyword">this</span>.nests]) resp[<span class="keyword">this</span>.nests] = resp[<span class="keyword">this</span>.nests].toJSON();
           <span class="keyword">return</span> resp;
         } <span class="keyword">else</span></pre></div></div>
             
@@ -128,7 +127,7 @@ collection and we know the name of it. </p>
             
             <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(<span class="keyword">this</span>.nests) {
           <span class="keyword">for</span>(i = <span class="number">0</span>, j = nests.length; i &lt; j; i++) {
-            resp[nests[i]] = resp[nests[i]].toJSON();
+            <span class="keyword">if</span>(resp[nests[i]]) resp[nests[i]] = resp[nests[i]].toJSON();
           }
           <span class="keyword">return</span> resp;
         }</pre></div></div>
@@ -181,7 +180,7 @@ under the nest attributes name</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      parse: <span class="keyword">function</span>(data) {
+            <div class="content"><div class='highlight'><pre>      parse: <span class="keyword">function</span>(data, options) {
         <span class="keyword">var</span> i, j, nests = <span class="keyword">this</span>.nests.split(<span class="string">" "</span>);
         <span class="keyword">if</span>(nests.length === <span class="number">1</span>) {
           data[<span class="keyword">this</span>.nests] = <span class="keyword">new</span> <span class="keyword">this</span>.nest(data[<span class="keyword">this</span>.nests]);    
@@ -240,6 +239,7 @@ standard models. </p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(nests.length === <span class="number">1</span>) {
+            <span class="keyword">if</span>(!attr[<span class="keyword">this</span>.nests]) <span class="keyword">return</span>;
             <span class="keyword">return</span> <span class="keyword">this</span>.listenTo(attr[<span class="keyword">this</span>.nests], <span class="string">"change"</span>, <span class="keyword">function</span>() {
               <span class="keyword">this</span>.trigger(<span class="string">"change change:"</span>+<span class="keyword">this</span>.nests);
             }, <span class="keyword">this</span>);
@@ -260,6 +260,7 @@ standard models. </p>
             
             <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span>(<span class="keyword">this</span>.nests) {
           <span class="keyword">for</span>(i = <span class="number">0</span>, j = nests.length; i &lt; j; i++) {
+            <span class="keyword">if</span>(!attr[nests[i]]) <span class="keyword">continue</span>;
             <span class="keyword">this</span>.listenTo(attr[nests[i]], <span class="string">"change"</span>, <span class="keyword">function</span>() {
               <span class="keyword">this</span>.trigger(<span class="string">"change change:"</span>+nests[i]);
             }, <span class="keyword">this</span>);
@@ -316,7 +317,7 @@ standard models. </p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> methods = [<span class="string">'push'</span>, <span class="string">'pop'</span>, <span class="string">'unshift'</span>, <span class="string">'shift'</span>];</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> methods = [<span class="string">'push'</span>, <span class="string">'pop'</span>, <span class="string">'unshift'</span>, <span class="string">'shift'</span>, <span class="string">'at'</span>, <span class="string">'where'</span>, <span class="string">'findWhere'</span>];</pre></div></div>
             
         </li>
         
@@ -333,9 +334,46 @@ standard models. </p>
             
             <div class="content"><div class='highlight'><pre>  _.each(methods, <span class="keyword">function</span>(method) {
     Backbone.Model.prototype[method] = <span class="keyword">function</span>() {
-      <span class="keyword">var</span> args = Array.prototype.slice.call(arguments);
-      <span class="keyword">return</span> Backbone.Collection.prototype[method].apply(<span class="keyword">this</span>.attributes[<span class="keyword">this</span>.nest], args);
-    }
+      <span class="keyword">var</span> args = Array.prototype.slice.call(arguments),
+          nests = <span class="keyword">this</span>.nests.split(<span class="string">" "</span>), i, j;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>if scond param is blank, or only one nest, 
+call it on just first nest in nests.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span>(nests.length === <span class="number">1</span> || !!!args[<span class="number">1</span>]) {
+        <span class="keyword">return</span> Backbone.Collection.prototype[method].apply(<span class="keyword">this</span>.attributes[nests[<span class="number">0</span>]], args);
+      }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>if second param of method is true, go through all nests.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">return</span> <span class="keyword">function</span>(){
+        <span class="keyword">for</span>(i = <span class="number">0</span>, j = nests.length; i &lt; j; i++){
+          Backbone.Collection.prototype[method].apply(<span class="keyword">this</span>.attributes[nests[i]], args);
+        };
+      };
+    };
   });
 
 }(Backbone))</pre></div></div>
