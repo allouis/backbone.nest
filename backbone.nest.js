@@ -97,9 +97,12 @@
     Backbone.Model.prototype[method] = function() {
       var args = Array.prototype.slice.call(arguments),
           nests = this.nests.split(" "), i, j;
-      if(nests.length === 1) {
-        return Backbone.Collection.prototype[method].apply(this.attributes[this.nests], args);
+      //if scond param is blank, or only one nest, 
+      //call it on just first nest in nests.
+      if(nests.length === 1 || !!!args[1]) {
+        return Backbone.Collection.prototype[method].apply(this.attributes[nests[0]], args);
       }
+      //if second param of method is true, go through all nests.
       return function(){
         for(i = 0, j = nests.length; i < j; i++){
           Backbone.Collection.prototype[method].apply(this.attributes[nests[i]], args);
