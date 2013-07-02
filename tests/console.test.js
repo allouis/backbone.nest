@@ -1,30 +1,19 @@
-
-var testcollection = new Backbone.Collection([
-      {
-        name:"test1",
-        type:"model"
-      },
-      {
-        name:"test2",
-        type:"model"
-      }
-    ]),
-    TestModel = Backbone.Model.extend({
-      nest: "Coll"
-    }),
-    testmodel = new TestModel({
-      Coll: testcollection,
-      name:"base"
-    })
-
-TestModel.on("change", function (change) {
-  console.log("TestModel::change:");
-});
-TestCollection.on("change", function (change) {
-  console.log("TestCollection::change")
+var Model = Backbone.Model.extend({
+  nest: Collection,
+  nests: "myColl"
 });
 
-var mod = testmodel,
-    col = testcollection;
+var Collection = Backbone.Collection.extend({
+  model: Model
+});
 
-
+var TestModel = new Model({
+  name: "test",
+  age: 20,
+  myColl: [
+    {name:"test1"},
+    {name:"test2"},
+    {name:"test3"},
+    {name:"test4"}
+  ]
+})

@@ -16,13 +16,13 @@
         //Optimize if we know there is only one nested 
         //collection and we know the name of it. 
         if(nests.length === 1) {
-          resp[this.nests] = resp[this.nests].toJSON();
+          if(resp[this.nests]) resp[this.nests] = resp[this.nests].toJSON();
           return resp;
         } else
         //Optimize if there are multiple and we know the names.
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
-            resp[nests[i]] = resp[nests[i]].toJSON();
+            if(resp[nests[i]]) resp[nests[i]] = resp[nests[i]].toJSON();
           }
           return resp;
         }
@@ -41,11 +41,11 @@
       parse: function(data) {
         var i, j, nests = this.nests.split(" ");
         if(nests.length === 1) {
-          data[this.nests] = new this.nest(data[this.nests]);    
+          if(data[this.nests]) data[this.nests] = new this.nest(data[this.nests]);    
         } else
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
-            data[nests[i]] = new this.nest(data[nests[i]]);
+            if(data[nests[i]]) data[nests[i]] = new this.nest(data[nests[i]]);
           } 
         }
         return data;
@@ -60,6 +60,7 @@
         var attr = this.attributes;
         //Optimize if nested collection is explictly known.
         if(nests.length === 1) {
+            if(!attr[this.nests]) return;
             return this.listenTo(attr[this.nests], "change", function() {
               this.trigger("change change:"+this.nests);
             }, this);
@@ -67,6 +68,7 @@
         //Optimize for multiple and known.
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
+            if(!attr[nests[i]]) continue;
             this.listenTo(attr[nests[i]], "change", function() {
               this.trigger("change change:"+nests[i]);
             }, this);
