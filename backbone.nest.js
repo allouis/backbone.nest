@@ -96,7 +96,7 @@
     Backbone.Model.prototype[method] = function() {
       var args = Array.prototype.slice.call(arguments),
           nests = this.nests.split(" "), i, j;
-      if(nest.length === 1) {
+      if(nests.length === 1) {
         return Backbone.Collection.prototype[method].apply(this.attributes[this.nests], args);
       }
       return function(){
