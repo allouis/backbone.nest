@@ -51,12 +51,12 @@
         return data;
       },
 
-      //listenToCollection
+      //listenToNest
       //------------------
       //This bubbles change events from nested collections
       //up to the container model, not auto to optimize for
       //standard models. 
-      listenToCollection: function(nest, ev, func) {
+      listenToNest: function(nest, ev, func) {
         var i, j, nests = this.nests.split(" ");
         var attr = this.attributes;
         if(nest) {
