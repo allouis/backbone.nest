@@ -56,22 +56,29 @@
       //This bubbles change events from nested collections
       //up to the container model, not auto to optimize for
       //standard models. 
-      listenToCollection: function() {
+      listenToCollection: function(nest, ev, func) {
         var i, j, nests = this.nests.split(" ");
         var attr = this.attributes;
+        if(nest) {
+           if(!attr[nest]) return;
+           return this.listenTo(attr[nest], (ev || "change"), function(data) {
+              this.trigger("change change:"+nest, data);
+              if(func) func(data);
+           }, this)
+        }
         //Optimize if nested collection is explictly known.
         if(nests.length === 1) {
             if(!attr[this.nests]) return;
-            return this.listenTo(attr[this.nests], "change", function() {
-              this.trigger("change change:"+this.nests);
+            return this.listenTo(attr[this.nests], "change", function(data) {
+              this.trigger("change change:"+this.nests, data);
             }, this);
         } else
         //Optimize for multiple and known.
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
             if(!attr[nests[i]]) continue;
-            this.listenTo(attr[nests[i]], "change", function() {
-              this.trigger("change change:"+nests[i]);
+            this.listenTo(attr[nests[i]], "change", function(data) {
+              this.trigger("change change:"+nests[i], data);
             }, this);
           } 
           return;
@@ -79,8 +86,8 @@
         //If not loop through all.
         for(prop in attr) {
           if(attr[prop] instanceof Backbone.Collection) { 
-            return this.listenTo(attr[prop], "change", function() {
-              this.trigger("change change:"+prop);
+            return this.listenTo(attr[prop], "change", function(data) {
+              this.trigger("change change:"+prop, data);
             }, this);
           };
         };
