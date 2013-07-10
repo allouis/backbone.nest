@@ -91,7 +91,20 @@
             }, this);
           };
         };
+      },
+
+      //stopListeningToNest
+      //-------------------
+      stopListeningToNest: function(nest, ev) {
+        var i, j, nests = this.nests.split(" "), attr = this.attributes;
+        if(nest) {
+          return this.stopListening(nest, ev);
+        }
+        for(i = 0, j = nests.length; i < j; i++) {
+          this.stopListening(attr[nest[i]]);
+        };
       }
+
     });
 
   //Proxy collection methods on nest via the model.
