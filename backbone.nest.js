@@ -3,6 +3,13 @@
     //-----
     //Extending the prototype with our helpers
     Backbone.Nest = Backbone.Model.extend({
+      //constructor
+      //setup constructor so parse is default for nests
+      constructor: function(attributes, options){
+        options || (options = {})
+        if(options.parse == undefined) options.parse = true             
+        Backbone.Model.apply(this, arguments);
+      },
       //toJSON
       //------
       //Here we check if an attribute is a Collection,
@@ -15,13 +22,14 @@
         //Optimize if we know there is only one nested 
         //collection and we know the name of it. 
         if(nests.length === 1) {
-          if(!!filter) resp[this.nests] = resp[this.nests][filter]()
+          if(!!filter && !!resp[this.nests][filter]) resp[this.nests] = resp[this.nests][filter]()
           if(resp[this.nests]) resp[this.nests] = resp[this.nests].toJSON();
           return resp;
         } else
         //Optimize if there are multiple and we know the names.
         if(this.nests) {
           for(i = 0, j = nests.length; i < j; i++) {
+            if(!!filter && !!resp[nests[i]][filter]) resp[nests[i]] = resp[nests[i]][filter]()
             if(resp[nests[i]]) resp[nests[i]] = resp[nests[i]].toJSON();
           }
           return resp;
@@ -29,6 +37,7 @@
         //If not loop through all.
         for(prop in attr) {
           if(attr[prop] instanceof Backbone.Collection) { 
+            if(!!filter && !!resp[prop][filter]) resp[prop] = resp[prop][filter]()
             resp[prop] = resp[prop].toJSON();
           };
         };
