@@ -2,12 +2,12 @@
     //Model
     //-----
     //Extending the prototype with our helpers
-    _.extend(Backbone.Model.prototype, {
+    Backbone.Nest = Backbone.Model.extend({
       //toJSON
       //------
       //Here we check if an attribute is a Collection,
       //then recursively call toJSON on models within.
-      toJSON: function() {
+      toJSON: function(filter) {
         var attr = this.attributes,
             resp = _.clone(attr),
             nests = this.nests.split(" "),
@@ -15,6 +15,7 @@
         //Optimize if we know there is only one nested 
         //collection and we know the name of it. 
         if(nests.length === 1) {
+          if(!!filter) resp[this.nests] = resp[this.nests][filter]()
           if(resp[this.nests]) resp[this.nests] = resp[this.nests].toJSON();
           return resp;
         } else
@@ -114,7 +115,7 @@
 
   //Go through each one, have it invoke upon the nest
   _.each(methods, function(method) {
-    Backbone.Model.prototype[method] = function() {
+    Backbone.Nest.prototype[method] = function() {
       var args = Array.prototype.slice.call(arguments),
           nests = this.nests.split(" "), i, j;
       //if scond param is blank, or only one nest, 
