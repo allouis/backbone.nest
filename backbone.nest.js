@@ -53,7 +53,7 @@
         if(nests.length === 1) {
           data[this.nests] = new this.nest(data[this.nests]);    
         } else
-        if(this.nests) {
+        if(!!nests[0]) {
           for(i = 0, j = nests.length; i < j; i++) {
             data[nests[i]] = new this.nest(data[nests[i]]);
           } 
