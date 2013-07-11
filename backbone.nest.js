@@ -50,7 +50,7 @@
       //under the nest attributes name
       parse: function(data, options) {
         var i, j, nests = this.nests.split(" ");
-        if(nests.length === 1) {
+        if(nests.length === 1 && !!nests[0]) {
           data[this.nests] = new this.nest(data[this.nests]);    
         } else
         if(!!nests[0]) {
