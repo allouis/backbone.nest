@@ -113,7 +113,10 @@
         for(i = 0, j = nests.length; i < j; i++) {
           this.stopListening(attr[nest[i]]);
         };
-      }
+      },
+
+      nest: Backbone.Collection,
+      nests:""
 
     });
 
