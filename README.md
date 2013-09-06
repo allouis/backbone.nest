@@ -3,6 +3,13 @@ backbone.nest
 
 Backbone plugin that enables infinitely nested Collections within Models, and advanced data structure.
 
+Basic Concept
+=============
+
+Simply use `Backbone.Nest` instead of `Backbone.Model`, and use `{ parse: true }` when creating model. 
+The rest is taken care of, set the nest attribute to be the collection you want created, and the nests 
+attribute as a space seperated list of the attributes to be turned into collections.
+
 
 How to use
 ==========
