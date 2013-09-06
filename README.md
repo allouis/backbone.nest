@@ -7,7 +7,7 @@ Backbone plugin that enables infinitely nested Collections within Models, and ad
 How to use
 ==========
 
-    var LevelOneModel = Backbone.Model.extend({
+    var LevelOneModel = Backbone.Nest.extend({
         //stuff
     })
 
@@ -17,7 +17,7 @@ How to use
 
     })
 
-    var LevelTwoModel = Backbone.Model.extend({
+    var LevelTwoModel = Backbone.Nest.extend({
         
         nest: LevelOneModels,
         nests: "levelOne"
@@ -31,7 +31,7 @@ How to use
 
     })
 
-    var LevelThreeModel = Backbone.Model.extend({
+    var LevelThreeModel = Backbone.Nest.extend({
     
         nest: LevelTwoModels,
         nests: "levelTwo"
@@ -80,7 +80,7 @@ How to use
 
     }
 
-    var myModel = new LevelThreeModel(data);
+    var myModel = new LevelThreeModel(data, {parse:true});
 
     myModel.get("levelTwo").get(3).get("levelOne").each(function(mod){
         console.log(mod.get("id")) // 3.1, 3.2, 3.3
